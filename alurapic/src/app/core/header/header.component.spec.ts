@@ -46,7 +46,7 @@ describe('O componente Header', () => {
 
     it('deve realizar o logout', () => {
         const spy = spyOn(userService, 'logout').and.returnValue(null);
-        const navigateSpy = spyOn(router, 'navigate');
+        const navigateSpy = spyOn(router, 'navigate');  //a função ´spyOn()´ cria um objeto que permite avaliar se o método foi chamado e com quais parâmetros.
         component.logout();
         expect(spy).toHaveBeenCalled();
         expect(navigateSpy).toHaveBeenCalledWith(['']);

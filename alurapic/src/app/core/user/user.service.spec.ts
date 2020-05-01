@@ -1,5 +1,6 @@
 import { UserService } from "./user.service";
 import { TokenService } from "../token/token.service";
+import { TestBed } from "@angular/core/testing";
 
 describe('O serviço UserService', () => {
 
@@ -7,7 +8,11 @@ describe('O serviço UserService', () => {
 
     beforeEach(() => {
         tokenKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6ImZsYXZpbyIsImVtYWlsIjoiZmxhdmlvQGFsdXJhcGljLmNvbS5iciIsImlhdCI6MTU4ODM0OTAzNiwiZXhwIjoxNTg4NDM1NDM2fQ.MfhYN0PD4APVjTt_TkAFB9UqtXQNJ3higXwWhgb2Fi4';
-        service = new UserService(new TokenService);
+        // service = new UserService(new TokenService);
+        TestBed.configureTestingModule({  // vai simular a criação do objeto através de um módulo. É um mini módulo
+            providers: [ UserService ]
+        });
+        service = TestBed.get(UserService); // assim não preciso instanciar manualmente o meu objeto
     });
 
     it('deve ser instanciado', () => {
@@ -18,5 +23,15 @@ describe('O serviço UserService', () => {
         service.setToken(tokenKey);
         expect(service.isLogged()).toBeTruthy();
         expect(service.getUserName()).toBe('flavio');
+        service.getUser().subscribe(user => {
+            expect(user.name).toBe('flavio');
+        });
+    });
+
+    it('deve limpar as informações no logout', () => {
+        service.setToken(tokenKey);
+        service.logout();
+        expect(service.isLogged()).toBeFalsy();
+        expect(service.getUserName()).toBe(''); // ou tobefalsy
     });
 });

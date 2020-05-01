@@ -6,15 +6,16 @@ import { MenuModule } from "src/app/shared/componets/menu/menu.module";
 import { AlertModule } from "src/app/shared/componets/alert/alert.module";
 import { LoadingModule } from "src/app/shared/componets/loading/loading.module";
 import { of } from "rxjs";
+import { Router } from "@angular/router";
 
 describe('O componente Header', () => {
 
-    let component: HeaderComponent, userService: UserService;
+    let component: HeaderComponent, userService: UserService, router: Router;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ HeaderComponent ],
-            providers: [ UserService ],
+            declarations: [HeaderComponent],
+            providers: [UserService],
             imports: [
                 RouterTestingModule.withRoutes([]),
                 MenuModule,
@@ -26,7 +27,9 @@ describe('O componente Header', () => {
 
     beforeEach(() => {
         userService = TestBed.get(UserService);
-        spyOn(userService, 'getUser').and.returnValue(of({  //of cria um observable
+        router = TestBed.get(Router);
+
+        spyOn(userService, 'getUser').and.returnValue(of ({  //of cria um observable
             name: 'Daniele',
             email: 'danii.exe@gmail.com',
             id: 1
@@ -39,5 +42,13 @@ describe('O componente Header', () => {
 
     it('deve ser instanciado', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('deve realizar o logout', () => {
+        const spy = spyOn(userService, 'logout').and.returnValue(null);
+        const navigateSpy = spyOn(router, 'navigate');
+        component.logout();
+        expect(spy).toHaveBeenCalled();
+        expect(navigateSpy).toHaveBeenCalledWith(['']);
     });
 });

@@ -58,13 +58,16 @@ describe('O formulário SignUp', () => {
     });
 
     it('deve realizar o log caso ocorra algum erro', () => {
+        //A função throwError() retorna um observable com estado de erro para criar o teste.
         spyOn(signupService, 'signup').and.returnValue(throwError('Erro de Servidor')); // to retornando um observable de erro
         
+        //o método setValue() executa todas as validações criadas para o campo, possibilitando testes de várias situações.
         component.signupForm.get('email').setValue('daniele@daniele.com');
         component.signupForm.get('fullName').setValue('Daniele Leite');
         component.signupForm.get('userName').setValue('daniele');
         component.signupForm.get('password').setValue('123');
 
+        //É possível criar spy para qualquer classe javascript.
         const spyLog = spyOn(console, 'log');
         
         component.signUp();

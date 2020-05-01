@@ -28,6 +28,7 @@ describe('O serviço AuthService', () => {
     });
 
      // FAKEASYNC cria uma bolha que permite simular a passagem de tempo de resposta do servidor 
+     // Quando realizamos o testes de uma função assíncrona, devemos envelopar nosso teste com a função ´fakeAsync()´.
     it('deve autenticar o usuário', fakeAsync(() => {
         const fakeBody = {
             id: 1,
@@ -43,20 +44,45 @@ describe('O serviço AuthService', () => {
         service
             .authenticate('daniele', '1234')
             .subscribe(response => {
+                // Para nós conseguirmos criar a avaliação (´expect´) de um Observable, precisamos utilizar o método subscribe
                 expect(response.body).toEqual(fakeBody);
                 expect(spy).toHaveBeenCalledWith('tokenTest'); // verifica se as funções foram chamadas.
             });
         
         //  FAZ A REQUISICAO avalia se algum metodo do teste executou algum requisicao HTTP (rest)
+        // httpMock.expectOne() retorna um objeto válido se as condições de chamada da requisição estiverem de acordo com as condições informadas nos parâmetros.
         const request = httpMock.expectOne(req => {
             return req.method === 'POST';
         });
 
         // RETORNO DA REQUISICAO fará o retorno da requisição
+        // O objeto ´request´, criado por httpMock, serve justamente para simular uma requisição ao servidor 
+        //     back-end e, assim, não precisarmos dele nos testes unitários do front-end.
         request.flush(fakeBody, { 
             headers: { 'x-access-token': 'tokenTest' }
         })
 
         tick(); // simula a passagem de tempo de requisição ao server
     }));
+
+
+
+    // it("O serviço PhotoService deve retornar uma foto com um id", fakeAsync(() => {
+    //     const fakePhoto = {
+    //       id: 1,
+    //       description: 'photo1',
+    //     };
+    
+    //     service.getPhoto("1").subscribe(response => {
+    //       expect(response.body).toEqual(fakePhoto);
+    //     });
+    
+    //     const request = httpMock.expectOne(req => {
+    //       return req.method === "GET";
+    //     });
+    
+    //     request.flush(fakePhoto);
+    
+    //     tick();
+    //   }));
 });
